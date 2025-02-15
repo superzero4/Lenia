@@ -64,7 +64,9 @@ class Board:
         self.params = {'R':DEF_R, 'T':10, 'b':[1], 'm':0.1, 's':0.01, 'kn':1, 'gn':1}
         self.param_P = 0
         self.cells = np.zeros(size)
-
+        self.file = open('lenia.json', 'w')
+    def print_cells(self):
+        json.dump(self.to_data(), self.file,indent = 4)
     @classmethod
     def from_values(cls, cells, params=None, names=None):
         self = cls()
@@ -400,6 +402,8 @@ class Automaton:
                 self.world.cells[mask] = A_new[mask]
             else:
                 self.world.cells = A_new
+            self.world.print_cells()
+            
             self.gen += 1
             self.time = round(self.time + dt, ROUND)
         if self.is_gpu:
@@ -1711,35 +1715,36 @@ class Lenia:
         del draw
 
     def draw_legend(self, markers=[]):
-        draw = PIL.ImageDraw.Draw(self.img)
-        R, T = [self.world.params[k] for k in ('R', 'T')]
-        midpoint = np.asarray([MIDX, MIDY])
-        dd = np.asarray([1, 1]) * 2
-        if 'arrow' in markers and self.markers_mode in [0,1,4,5] and self.polar_mode in [0,1]:
-            #draw speed legend
-            x0, y0 = SIZEX*PIXEL-50, SIZEY*PIXEL-35
-            draw.line([(x0-90,y0),(x0,y0)], fill=254, width=1)
-            for (m,c) in [(0,254),(-10,255),(-50,255),(-90,255)]:
-                draw.ellipse(tuple((x0+m,y0)-dd) + tuple((x0+m,y0)+dd), fill=c)
-            draw.text((x0-95,y0-20), '2s', fill=255, font=self.font)
-            draw.text((x0-55,y0-20), '1s', fill=255, font=self.font)
-        if 'scale' in markers and self.markers_mode in [0,1,4,5] and self.polar_mode in [0,1]:
-            #draw scale bar
-            x0, y0 = SIZEX*PIXEL-50, SIZEY*PIXEL-20
-            draw.text((x0+10,y0), '1mm', fill=255, font=self.font)
-            draw.rectangle([(x0-R*PIXEL,y0+3),(x0,y0+7)], fill=255)
-        if 'colormap' in markers and self.markers_mode in [0,2,4,6] and self.polar_mode in [0,1]:
-            #draw colormap
-            x0, y0 = SIZEX*PIXEL-20, SIZEY*PIXEL-70
-            x1, y1 = SIZEX*PIXEL-15, 20
-            dy = (y1-y0)/253
-            draw.rectangle([(x0-1,y0+1),(x1+1,y1-1)], outline=254)
-            for c in range(253):
-                draw.rectangle([(x0,y0+dy*c),(x1,y0+dy*(c+1))], fill=c)
-            draw.text((x0-25,y0-5), '0.0', fill=255, font=self.font)
-            draw.text((x0-25,(y1+y0)//2-5), '0.5', fill=255, font=self.font)
-            draw.text((x0-25,y1-5), '1.0', fill=255, font=self.font)
-        del draw
+        pass;
+        #draw = PIL.ImageDraw.Draw(self.img)
+        #R, T = [self.world.params[k] for k in ('R', 'T')]
+        #midpoint = np.asarray([MIDX, MIDY])
+        #dd = np.asarray([1, 1]) * 2
+        #if 'arrow' in markers and self.markers_mode in [0,1,4,5] and self.polar_mode in [0,1]:
+        #    #draw speed legend
+        #    x0, y0 = SIZEX*PIXEL-50, SIZEY*PIXEL-35
+        #    draw.line([(x0-90,y0),(x0,y0)], fill=254, width=1)
+        #    for (m,c) in [(0,254),(-10,255),(-50,255),(-90,255)]:
+        #        draw.ellipse(tuple((x0+m,y0)-dd) + tuple((x0+m,y0)+dd), fill=c)
+        #    draw.text((x0-95,y0-20), '2s', fill=255, font=self.font)
+        #    draw.text((x0-55,y0-20), '1s', fill=255, font=self.font)
+        #if 'scale' in markers and self.markers_mode in [0,1,4,5] and self.polar_mode in [0,1]:
+        #    #draw scale bar
+        #    x0, y0 = SIZEX*PIXEL-50, SIZEY*PIXEL-20
+        #    draw.text((x0+10,y0), '1mm', fill=255, font=self.font)
+        #    draw.rectangle([(x0-R*PIXEL,y0+3),(x0,y0+7)], fill=255)
+        #if 'colormap' in markers and self.markers_mode in [0,2,4,6] and self.polar_mode in [0,1]:
+        #    #draw colormap
+        #    x0, y0 = SIZEX*PIXEL-20, SIZEY*PIXEL-70
+        #    x1, y1 = SIZEX*PIXEL-15, 20
+        #    dy = (y1-y0)/253
+        #    draw.rectangle([(x0-1,y0+1),(x1+1,y1-1)], outline=254)
+        #    for c in range(253):
+        #        draw.rectangle([(x0,y0+dy*c),(x1,y0+dy*(c+1))], fill=c)
+        #    draw.text((x0-25,y0-5), '0.0', fill=255, font=self.font)
+        #    draw.text((x0-25,(y1+y0)//2-5), '0.5', fill=255, font=self.font)
+        #    draw.text((x0-25,y1-5), '1.0', fill=255, font=self.font)
+        #del draw
 
     def cube_xy(self, d1, d2, d3, s):
         return (s + d1 - d3), (2*s + d1 - 2*d2 + d3)
