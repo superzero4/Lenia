@@ -64,9 +64,7 @@ class Board:
         self.params = {'R':DEF_R, 'T':10, 'b':[1], 'm':0.1, 's':0.01, 'kn':1, 'gn':1}
         self.param_P = 0
         self.cells = np.zeros(size)
-        self.file = open('lenia.json', 'w')
-    def print_cells(self):
-        json.dump(self.to_data(), self.file,indent = 4)
+        
     @classmethod
     def from_values(cls, cells, params=None, names=None):
         self = cls()
@@ -402,7 +400,6 @@ class Automaton:
                 self.world.cells[mask] = A_new[mask]
             else:
                 self.world.cells = A_new
-            self.world.print_cells()
             
             self.gen += 1
             self.time = round(self.time + dt, ROUND)
@@ -1057,6 +1054,15 @@ class Lenia:
         #self.font = PIL.ImageFont.truetype('resource/monaco.ttf', 10)
         #self.convert_font_run_once('resource/bitocra-13.bdf')
         self.font = PIL.ImageFont.load('resource/bitocra-13.pil')
+        self.file = open('lenia.json', 'w')
+        np.set_printoptions(formatter={'float_kind': lambda x: "{:.2f}".format(x)}, threshold=np.inf)
+        self.file.write('[{}\n')
+
+    def print_cells(self):
+        self.file.write(',\n {"cells" :')
+        self.file.write(np.array2string(self.world.cells, separator=', '))
+        self.file.write('}')
+    #json.dump(, self.file,indent = 4)
 
     def convert_font_run_once(self, font_file_path):
         import PIL.BdfFontFile, PIL.PcfFontFile
@@ -1233,6 +1239,8 @@ class Lenia:
             self.back = copy.deepcopy(self.world)
         self.automaton.reset()
         self.analyzer.reset()
+        self.print_cells()
+
 
     def clear_world(self):
         self.world.clear()
@@ -2478,6 +2486,7 @@ class Lenia:
         self.is_loop = False
         if self.recorder.is_recording:
             self.recorder.finish_record()
+        self.file.write('\n]')
         self.window.destroy()
 
     def run(self):
@@ -2504,6 +2513,7 @@ class Lenia:
                     self.run_counter -= 1
                     if self.run_counter == 0:
                         self.is_run = False
+            self.print_cells()
             is_show_gen = self.automaton.gen % 1000 == 0 and self.automaton.gen // 1000 > 3
             if (self.search_mode != 0 and counter % self.samp_freq == 0) or \
                (self.search_mode == 0 and self.is_show_search):
