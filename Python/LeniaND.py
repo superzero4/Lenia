@@ -1071,6 +1071,7 @@ class Lenia:
         l2 = np.array2string(self.world.cells, separator=', ')
         #self.file.write(l2)
         l3 = '}'
+        os.system('cls')
         #self.file.write(l3)
         print(l1)
         #print(l2)
