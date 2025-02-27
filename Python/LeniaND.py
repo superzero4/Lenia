@@ -1054,14 +1054,28 @@ class Lenia:
         #self.font = PIL.ImageFont.truetype('resource/monaco.ttf', 10)
         #self.convert_font_run_once('resource/bitocra-13.bdf')
         self.font = PIL.ImageFont.load('resource/bitocra-13.pil')
-        self.file = open('lenia.json', 'w')
+        #Setting NP print options to display 2 floating points digits
         np.set_printoptions(formatter={'float_kind': lambda x: "{:.2f}".format(x)}, threshold=np.inf)
-        self.file.write('[{}\n')
+        line = '[{}\n'
+        #setting stdout and stderr to use line buffering =1, i.e flush after each line
+        #sys.stdout = open(sys.stdout.fileno(), mode='w', buffering=1, encoding='cp1252', closefd=False)
+        #sys.stderr = open(sys.stderr.fileno(), mode='w', buffering=1, encoding='cp1252', closefd=False)
+        
+        print(line)
+        #self.file = open('lenia.json', 'w')
+        #self.file.write(line)
 
     def print_cells(self):
-        self.file.write(',\n {"cells" :')
-        self.file.write(np.array2string(self.world.cells, separator=', '))
-        self.file.write('}')
+        l1 = ',\n {"cells" :'
+        #self.file.write(l1)
+        l2 = np.array2string(self.world.cells, separator=', ')
+        #self.file.write(l2)
+        l3 = '}'
+        #self.file.write(l3)
+        print(l1)
+        #print(l2)
+        print(l3)
+        sys.stdout.flush()
     #json.dump(, self.file,indent = 4)
 
     def convert_font_run_once(self, font_file_path):
