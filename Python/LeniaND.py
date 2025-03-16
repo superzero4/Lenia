@@ -1056,26 +1056,30 @@ class Lenia:
         self.font = PIL.ImageFont.load('resource/bitocra-13.pil')
         #Setting NP print options to display 2 floating points digits
         np.set_printoptions(formatter={'float_kind': lambda x: "{:.2f}".format(x)}, threshold=np.inf)
-        line = '[{}\n'
-        #setting stdout and stderr to use line buffering =1, i.e flush after each line
+        #setting stdout and stderr to use line buffering =1, i.e flush after each line, if we don't flush manually
         #sys.stdout = open(sys.stdout.fileno(), mode='w', buffering=1, encoding='cp1252', closefd=False)
         #sys.stderr = open(sys.stderr.fileno(), mode='w', buffering=1, encoding='cp1252', closefd=False)
-        
-        print(line)
         #self.file = open('lenia.json', 'w')
         #self.file.write(line)
 
     def print_cells(self):
-        l1 = ',\n {"cells" :'
-        #self.file.write(l1)
-        l2 = np.array2string(self.world.cells, separator=', ')
-        #self.file.write(l2)
-        l3 = '}'
         os.system('cls')
-        #self.file.write(l3)
+        l1 = ',\n {"cells" : ['
         print(l1)
-        #print(l2)
+        #self.file.write(l1)
+        for grid in self.world.cells:
+            str = np.array2string(grid, separator=',')+'\n'
+            #self.file.write(str)
+            print(str)
+            sys.stdout.flush()
+        #l2 = np.array2string(self.world.cells, separator=', ')
+        #self.file.write(l2)
+        #for i in l2.split('[['):
+        #    print('[['+i)
+        #    sys.stdout.flush()
+        l3 = ']}'
         print(l3)
+        #self.file.write(l3)
         sys.stdout.flush()
     #json.dump(, self.file,indent = 4)
 
